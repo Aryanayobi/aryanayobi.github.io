@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aryan Ayobi — Data Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0f1e;
+      --bg2: #0e1628;
+      --surface: #111827;
+      --border: #1e2d47;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --heading: #f8fafc;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 3rem;
+      background: rgba(10,15,30,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 6rem 3rem 4rem;
+      overflow: hidden;
+    }
+
+    /* animated grid */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.35;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0%   { background-position: 0 0; }
+      100% { background-position: 60px 60px; }
+    }
+
+    /* glow blobs */
+    #hero::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+      top: -200px; right: -200px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,212,255,0.3);
+      padding: 0.35rem 1rem;
+      border-radius: 2rem;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-name {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      line-height: 1;
+      color: var(--heading);
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .hero-name span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .hero-btns {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.35s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #0099bb);
+      color: #000;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,255,0.3); }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fadeUp 1s 0.6s ease both;
+    }
+
+    .scroll-hint span {
+      display: block;
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 6rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── ABOUT ── */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-avatar {
+      position: relative;
+    }
+
+    .avatar-box {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 1rem;
+      background: linear-gradient(135deg, var(--surface), var(--bg2));
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .avatar-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(124,58,237,0.1));
+    }
+
+    .avatar-initials {
+      font-weight: 800;
+      font-size: 5rem;
+      color: var(--accent);
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .about-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 2rem 0;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .info-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+    }
+
+    .info-value {
+      font-size: 0.9rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .about-bio {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    /* ── SKILLS ── */
+    #skills { background: var(--bg2); max-width: 100%; }
+    #skills .inner { max-width: 1100px; margin: 0 auto; padding: 0; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .skill-category {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .skill-category:hover { border-color: var(--accent); }
+
+    .skill-category h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .skill-tag {
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      color: var(--text);
+      padding: 0.3rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* ── RESUME ── */
+    .timeline { position: relative; }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+    }
+
+    .timeline-item {
+      padding-left: 2.5rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px;
+      top: 0.35rem;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 12px rgba(0,212,255,0.5);
+    }
+
+    .timeline-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .timeline-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      background: rgba(0,212,255,0.1);
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.25rem;
+    }
+
+    .timeline-company {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .timeline-role {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+
+    .timeline-desc ul {
+      padding-left: 1.2rem;
+      margin-top: 0.5rem;
+    }
+
+    .timeline-desc li { margin-bottom: 0.4rem; }
+
+    .tech-stack {
+      margin-top: 0.75rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tech-chip {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0.25rem;
+      background: rgba(124,58,237,0.12);
+      border: 1px solid rgba(124,58,237,0.25);
+      color: #a78bfa;
+    }
+
+    .resume-cols {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 4rem;
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.05), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+    .project-card:hover::before { opacity: 1; }
+
+    .project-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--heading);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg2); max-width: 100%; }
+    #contact .inner { max-width: 1100px; margin: 0 auto; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-icon {
+      width: 44px; height: 44px;
+      border-radius: 0.5rem;
+      background: rgba(0,212,255,0.1);
+      border: 1px solid rgba(0,212,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .contact-detail strong {
+      display: block;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 0.2rem;
+    }
+
+    .contact-detail span, .contact-detail a {
+      color: var(--text);
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    .contact-detail a:hover { color: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-family: 'Space Mono', monospace;
+    }
+
+    footer span { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { gap: 1rem; }
+      section { padding: 4rem 1.5rem; }
+      #about .about-grid { grid-template-columns: 1fr; }
+      .resume-cols { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <a class="nav-logo" href="#hero">AA</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#resume">Resume</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">Available for new opportunities</div>
+      <h1 class="hero-name">Aryan <span>Ayobi</span></h1>
+      <p class="hero-sub">
+        Data Engineer with 7+ years building high-volume ETL pipelines and data warehouses — turning millions of daily records into reliable, analytics-ready data.
+      </p>
+      <div class="hero-btns">
+        <a href="#resume" class="btn btn-primary">View Resume ↓</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+      </div>
+    </div>
+    <div class="scroll-hint">Scroll<span></span></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">01 — About</div>
+    <h2 class="section-title">Who I Am</h2>
+    <div class="divider"></div>
+    <div class="about-grid">
+      <div class="about-avatar">
+        <div class="avatar-box">
+          <div class="avatar-initials">AA</div>
+        </div>
+      </div>
+      <div>
+        <p class="about-bio">
+          I'm a Data Engineer with over 7 years of hands-on experience designing and maintaining high-volume ETL pipelines, data warehouses, and BI solutions—primarily in the telecommunications industry. I've built systems handling millions of records daily, consistently improving data processing speed by 30%+ and enabling reliable, audit-ready analytics for business teams.
+          <br><br>
+          My background spans end-to-end solution design: from ingesting raw network logs and subscriber data to building dashboards that drive real business decisions—including preventing $100K–$200K in fraud and saving $250K in vendor costs through in-house engineering.
+        </p>
+        <div class="about-info-grid">
+          <div class="info-item">
+            <span class="info-label">Location</span>
+            <span class="info-value">Maryland, USA</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value">aryan.ayobi88@gmail.com</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Phone</span>
+            <span class="info-value">+1 443 824 3350</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Degree</span>
+            <span class="info-value">M.Sc. Computer Science</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Experience</span>
+            <span class="info-value">7+ Years</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status</span>
+            <span class="info-value" style="color:var(--accent)">Open to Work</span>
+          </div>
+        </div>
+        <a href="#contact" class="btn btn-primary">Contact Me</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" style="padding: 6rem 0;">
+    <div class="inner">
+      <div class="section-label">02 — Skills</div>
+      <h2 class="section-title">Technical Expertise</h2>
+      <div class="divider"></div>
+      <div class="skills-grid">
+        <div class="skill-category">
+          <h4>Programming & Analytics</h4>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">PySpark</span>
+            <span class="skill-tag">Pandas</span>
+            <span class="skill-tag">NumPy</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h4>Data Engineering & Platforms</h4>
+          <div class="skill-tags">
+            <span class="skill-tag">Apache Spark</span>
+            <span class="skill-tag">Airflow</span>
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">MySQL</span>
+            <span class="skill-tag">Oracle</span>
+            <span class="skill-tag">BigQuery</span>
+            <span class="skill-tag">Redshift</span>
+            <span class="skill-tag">Delta Lake</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h4>Cloud & Infrastructure</h4>
+          <div class="skill-tags">
+            <span class="skill-tag">S3</span>
+            <span class="skill-tag">ADLS</span>
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">Bash</span>
+            <span class="skill-tag">Shell Scripting</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h4>Visualization & Reporting</h4>
+          <div class="skill-tags">
+            <span class="skill-tag">Tableau</span>
+            <span class="skill-tag">Power BI</span>
+            <span class="skill-tag">SAP BO/BI</span>
+            <span class="skill-tag">Knime</span>
+            <span class="skill-tag">Jupyter</span>
+            <span class="skill-tag">Plotly</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h4>ETL & Integration</h4>
+          <div class="skill-tags">
+            <span class="skill-tag">ODI (Oracle Data Integrator)</span>
+            <span class="skill-tag">FastAPI</span>
+            <span class="skill-tag">MongoDB</span>
+            <span class="skill-tag">Lufthansa API</span>
+          </div>
+        </div>
+        <div class="skill-category">
+          <h4>Version Control & Collaboration</h4>
+          <div class="skill-tags">
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">GitHub</span>
+            <span class="skill-tag">Jira</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESUME -->
+  <section id="resume">
+    <div class="section-label">03 — Resume</div>
+    <h2 class="section-title">Experience & Education</h2>
+    <div class="divider"></div>
+    <div class="resume-cols">
+      <!-- EXPERIENCE -->
+      <div>
+        <h3 style="color:var(--heading);margin-bottom:2rem;font-size:1.1rem;letter-spacing:0.05em;text-transform:uppercase;font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted);">Professional Experience</h3>
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <span class="timeline-date">Jan 2019 — May 2023</span>
+              <span class="timeline-company">Etisalat · Kabul, Afghanistan</span>
+            </div>
+            <div class="timeline-role">Data Engineer</div>
+            <div class="timeline-desc">
+              <ul>
+                <li>Built an end-to-end IFRS 15 revenue recognition system, cutting processing time by 60–70% and saving <strong>$250K</strong> in vendor costs.</li>
+                <li>Engineered ETL pipelines processing <strong>7M daily active subscribers</strong>, consolidating loyalty data and cutting processing time by 60%.</li>
+                <li>Built automated BI dashboards replacing manual reporting, improving data accuracy 40% and enabling fraud monitoring that prevented <strong>$100K–$200K</strong> in losses.</li>
+                <li>Modeled MyEtisalat app data into the warehouse, increasing user engagement 15% and driving 5% revenue growth from app transactions.</li>
+              </ul>
+              <div class="tech-stack">
+                <span class="tech-chip">Python</span>
+                <span class="tech-chip">SQL</span>
+                <span class="tech-chip">Shell Scripting</span>
+                <span class="tech-chip">SAP BO/BI</span>
+                <span class="tech-chip">ODI</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <span class="timeline-date">Nov 2015 — Jan 2019</span>
+              <span class="timeline-company">Etisalat · Kabul, Afghanistan</span>
+            </div>
+            <div class="timeline-role">KPI Engineer I</div>
+            <div class="timeline-desc">
+              <ul>
+                <li>Automated network KPI monitoring, extracting performance metrics from system logs processing <strong>100+ GB daily</strong>.</li>
+                <li>Cut manual log review time by 80%; delivered daily dashboards tracking 15+ KPIs to network engineers.</li>
+              </ul>
+              <div class="tech-stack">
+                <span class="tech-chip">SQL</span>
+                <span class="tech-chip">Shell Scripting</span>
+                <span class="tech-chip">C#</span>
+                <span class="tech-chip">Excel</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <span class="timeline-date">Mar 2015 — Oct 2015</span>
+              <span class="timeline-company">Roshan · Kabul, Afghanistan</span>
+            </div>
+            <div class="timeline-role">Revenue Assurance Analyst</div>
+            <div class="timeline-desc">
+              <ul>
+                <li>Analyzed daily network outages across 1,000+ sites, translating downtime into revenue loss metrics for executive dashboards used in vendor compensation and SLA decisions.</li>
+              </ul>
+              <div class="tech-stack">
+                <span class="tech-chip">SQL</span>
+                <span class="tech-chip">Visual Basic</span>
+                <span class="tech-chip">Excel</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- EDUCATION -->
+      <div>
+        <h3 style="color:var(--muted);margin-bottom:2rem;font-family:'Space Mono',monospace;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;">Education</h3>
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <span class="timeline-date">2012 — 2014</span>
+              <span class="timeline-company">New Delhi, India</span>
+            </div>
+            <div class="timeline-role">M.Sc. Computer Science</div>
+            <div class="timeline-desc">South Asian University</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-meta">
+              <span class="timeline-date">2006 — 2010</span>
+              <span class="timeline-company">Kabul, Afghanistan</span>
+            </div>
+            <div class="timeline-role">B.Sc. ICT</div>
+            <div class="timeline-desc">Kabul University</div>
+          </div>
+
+        </div>
+
+        <!-- STATS -->
+        <div style="margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:0.75rem;padding:1.25rem;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:'Space Mono',monospace;">7+</div>
+            <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Years Experience</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:0.75rem;padding:1.25rem;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:'Space Mono',monospace;">7M+</div>
+            <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Daily Records</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:0.75rem;padding:1.25rem;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:'Space Mono',monospace;">60%</div>
+            <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Faster Processing</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:0.75rem;padding:1.25rem;text-align:center;">
+            <div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:'Space Mono',monospace;">$250K</div>
+            <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">Cost Savings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" style="background:var(--bg2);max-width:100%;padding:6rem 3rem;">
+    <div style="max-width:1100px;margin:0 auto;">
+      <div class="section-label">04 — Projects</div>
+      <h2 class="section-title">Personal Projects</h2>
+      <div class="divider"></div>
+      <div class="projects-grid">
+        <div class="project-card">
+          <div class="project-icon">✈️</div>
+          <div class="project-title">Airline Tracking System</div>
+          <p class="project-desc">
+            End-to-end flight tracking data platform processing 3,000+ daily flights across 163 airports. Automated ETL pipelines with Airflow, multi-database architecture, and containerized microservices delivering real-time aviation insights via interactive dashboards.
+          </p>
+          <div class="tech-stack">
+            <span class="tech-chip">Python</span>
+            <span class="tech-chip">Apache Airflow</span>
+            <span class="tech-chip">PostgreSQL</span>
+            <span class="tech-chip">MongoDB</span>
+            <span class="tech-chip">FastAPI</span>
+            <span class="tech-chip">Dash/Plotly</span>
+            <span class="tech-chip">Docker</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">📊</div>
+          <div class="project-title">IFRS 15 Revenue Recognition Engine</div>
+          <p class="project-desc">
+            Replaced a legacy, error-prone multi-source revenue recognition process with a fully automated in-house system. Achieved full IFRS 15 compliance, improved audit readiness, and reduced processing time by 60–70%.
+          </p>
+          <div class="tech-stack">
+            <span class="tech-chip">Python</span>
+            <span class="tech-chip">SQL</span>
+            <span class="tech-chip">SAP BO/BI</span>
+            <span class="tech-chip">ODI</span>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">🛡️</div>
+          <div class="project-title">Fraud Detection & Loyalty Data Pipeline</div>
+          <p class="project-desc">
+            Consolidated fragmented loyalty data into a single source of truth for 7M daily subscribers. Automated BI dashboards enabled real-time fraud monitoring, preventing $100K–$200K in potential revenue loss.
+          </p>
+          <div class="tech-stack">
+            <span class="tech-chip">Python</span>
+            <span class="tech-chip">SQL</span>
+            <span class="tech-chip">SAP BO/BI</span>
+            <span class="tech-chip">Shell Scripting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" style="padding: 6rem 0;">
+    <div class="inner" style="padding: 0 3rem;">
+      <div class="section-label">05 — Contact</div>
+      <h2 class="section-title">Get In Touch</h2>
+      <div class="divider"></div>
+      <div class="contact-grid">
+        <div>
+          <p style="color:var(--muted);margin-bottom:2rem;font-size:0.95rem;line-height:1.8;">
+            I'm currently open to new opportunities in data engineering. Whether you have a question, a project, or just want to connect — my inbox is always open.
+          </p>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div class="contact-detail">
+              <strong>Location</strong>
+              <span>Maryland, USA</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div class="contact-detail">
+              <strong>Email</strong>
+              <a href="mailto:aryan.ayobi88@gmail.com">aryan.ayobi88@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div class="contact-detail">
+              <strong>Phone</strong>
+              <a href="tel:+14438243350">+1 443 824 3350</a>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+          <a href="mailto:aryan.ayobi88@gmail.com" class="btn btn-primary" style="text-align:center;justify-content:center;">
+            Send an Email ✉️
+          </a>
+          <a href="https://www.linkedin.com/in/" target="_blank" class="btn btn-outline" style="text-align:center;justify-content:center;">
+            Connect on LinkedIn
+          </a>
+          <a href="https://github.com/" target="_blank" class="btn btn-outline" style="text-align:center;justify-content:center;">
+            View GitHub Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 <span>Aryan Ayobi</span> — Data Engineer · Maryland, USA</p>
+  </footer>
+
+</body>
+</html>
